@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   List,
   ListItem,
@@ -11,7 +11,8 @@ import {
   IconButton,
   Badge,
   Menu,
-  MenuItem
+  MenuItem,
+  CircularProgress
 } from '@mui/material';
 import {
   Schedule as ScheduleIcon,
@@ -35,7 +36,8 @@ function EmailListItem({
   onMarkRead,
   onDelete
 }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [markingRead, setMarkingRead] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const isStarred = email.starred || false;
   const isRead = email.read !== false;
 
@@ -70,8 +72,15 @@ function EmailListItem({
     onStar(email.id, !isStarred);
   };
 
-  const handleMarkRead = () => {
-    onMarkRead(email.id, !isRead);
+  const handleMarkRead = async () => {
+    setMarkingRead(true);
+    try {
+      await onMarkRead(email.id, !isRead);
+    } catch (error) {
+      console.error('Failed to mark email as read/unread:', error);
+    } finally {
+      setMarkingRead(false);
+    }
     handleMenuClose();
   };
 
@@ -126,7 +135,7 @@ function EmailListItem({
           color: isRead ? 'grey.600' : 'white',
           fontWeight: 'bold'
         }}>
-          {email.to.charAt(0).toUpperCase()}
+          {email.to ? email.to.charAt(0).toUpperCase() : '?'}
         </Avatar>
       </ListItemAvatar>
       
@@ -161,12 +170,12 @@ function EmailListItem({
         secondary={
           <Box>
             <Typography variant="body2" color="textSecondary" noWrap>
-              To: {email.to}
+              To: {email.to || 'Unknown'}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
               <ScheduleIcon sx={{ fontSize: 14, color: 'text.disabled' }} />
               <Typography variant="caption" color="textSecondary">
-                {formatDate(email.created_at)}
+                {email.created_at ? formatDate(email.created_at) : 'Unknown date'}
               </Typography>
             </Box>
           </Box>
@@ -194,11 +203,16 @@ function EmailListItem({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        onClick={handleMenuClose}
       >
-        <MenuItem onClick={handleMarkRead}>
-          {isRead ? <MarkEmailUnreadIcon fontSize="small" /> : <MarkEmailReadIcon fontSize="small" />}
-          {isRead ? 'Mark as unread' : 'Mark as read'}
+        <MenuItem onClick={handleMarkRead} disabled={markingRead}>
+          {markingRead ? (
+            <CircularProgress size={16} sx={{ mr: 1 }} />
+          ) : isRead ? (
+            <MarkEmailUnreadIcon fontSize="small" />
+          ) : (
+            <MarkEmailReadIcon fontSize="small" />
+          )}
+          {markingRead ? 'Updating...' : (isRead ? 'Mark as unread' : 'Mark as read')}
         </MenuItem>
         {/* TODO: Implement these features in future updates
         <MenuItem onClick={handleReply}>

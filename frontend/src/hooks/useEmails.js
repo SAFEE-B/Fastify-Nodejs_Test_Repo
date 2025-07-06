@@ -114,8 +114,10 @@ export function useEmails() {
       const response = await emailApi.createEmail(sanitizedData);
       
       if (response.success) {
-        // Add new email to the beginning of the list
-        setEmails(prev => [response.data, ...prev]);
+        // Immediately add the new email to the state so it appears right away
+        if (response.data) {
+          setEmails(prev => [response.data, ...prev]);
+        }
         
         // Clear cache to force refresh on next fetch
         emailCache.current.clear();

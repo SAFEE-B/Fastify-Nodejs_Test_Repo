@@ -50,7 +50,7 @@ class EmailModel {
   static async getEmailCount(options = {}) {
     const { filter = 'all' } = options;
     
-    let query = db('emails').count('* as total').first();
+    let query = db('emails').count('* as total');
     
     // Apply filters
     switch (filter) {
@@ -69,7 +69,7 @@ class EmailModel {
         break;
     }
     
-    const result = await query;
+    const result = await query.first();
     return parseInt(result.total);
   }
 

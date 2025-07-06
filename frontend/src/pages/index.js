@@ -377,6 +377,20 @@ export default function Home() {
   // Debounce search term
   const debouncedSearchTerm = useSearchDebounce(searchTerm, 500);
 
+  // Handle email selection and auto-mark as read
+  const handleEmailSelect = async (email) => {
+    setSelectedEmail(email);
+    
+    // Auto-mark as read if currently unread
+    if (!email.read) {
+      try {
+        await markAsRead(email.id, true);
+      } catch (error) {
+        console.error('Failed to auto-mark email as read:', error);
+      }
+    }
+  };
+
   // Handle email sent
   const handleEmailSent = async (emailData) => {
     try {
@@ -400,6 +414,15 @@ export default function Home() {
         message: message,
         severity: severity
       });
+
+      // Do a silent refresh after a delay to ensure data consistency
+      setTimeout(async () => {
+        try {
+          await fetchEmails({ filter, forceRefresh: true });
+        } catch (error) {
+          console.warn('Silent refresh after email creation failed:', error);
+        }
+      }, 2000);
 
       return result;
     } catch (error) {
@@ -428,6 +451,11 @@ export default function Home() {
   const handleMarkRead = async (emailId, read) => {
     try {
       await markAsRead(emailId, read);
+      setSnackbar({
+        open: true,
+        message: `Email ${read ? 'marked as read' : 'marked as unread'}`,
+        severity: 'success'
+      });
     } catch (error) {
       setSnackbar({
         open: true,
@@ -617,11 +645,11 @@ export default function Home() {
                 selectedEmail={selectedEmail}
                 loading={loading}
                 searchTerm={searchTerm}
-                onEmailSelect={setSelectedEmail}
+                onEmailSelect={handleEmailSelect}
                 onStar={handleStarEmail}
                 onMarkRead={handleMarkRead}
-                                 onDelete={handleDeleteEmail}
-                 onCompose={() => setComposeOpen(true)}
+                onDelete={handleDeleteEmail}
+                onCompose={() => setComposeOpen(true)}
               />
             </Box>
           </Paper>
