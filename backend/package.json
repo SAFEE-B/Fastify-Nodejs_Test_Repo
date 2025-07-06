@@ -16,11 +16,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-email": "node test-email.js",
-    "migrate": "knex migrate:latest",
+    "migrate": "NODE_ENV=production knex migrate:latest",
     "seed": "node seed.js",
     "start": "node index.js",
     "dev": "PORT=3001 nodemon index.js",
-    "build": "npm run migrate"
+    "build": "node scripts/deploy.cjs"
   },
   "author": "",
   "license": "ISC",

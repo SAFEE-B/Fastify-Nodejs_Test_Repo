@@ -1,8 +1,12 @@
 import knex from 'knex';
-import knexConfig from '../../knexfile.js';
+import { createRequire } from 'module';
 import { escapeLikeQuery } from '../utils/validation.js';
 
-const db = knex(knexConfig.development);
+const require = createRequire(import.meta.url);
+const knexConfig = require('../../knexfile.cjs');
+
+const environment = process.env.NODE_ENV || 'development';
+const db = knex(knexConfig[environment]);
 
 class EmailModel {
   /**

@@ -28,7 +28,7 @@ services:
     env: static
     region: oregon
     plan: free
-    buildCommand: npm install && npm run build && npm run export
+    buildCommand: npm install && npm run build
     staticPublishPath: out
     rootDir: frontend
     envVars:
