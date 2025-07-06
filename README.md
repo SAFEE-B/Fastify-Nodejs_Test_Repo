@@ -63,7 +63,7 @@ A modern, full-stack email client application built with Next.js, Fastify, and S
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd email-client-app
+cd Fastify-Nodejs_Test_Repo
 ```
 
 ### 2. Backend Setup
@@ -109,7 +109,7 @@ GMAIL_APP_PASSWORD=your-app-specific-password
 ## 📁 Project Structure
 
 ```
-email-client-app/
+Fastify-Nodejs_Test_Repo/
 ├── backend/                 # Fastify backend server
 │   ├── src/
 │   │   ├── controllers/     # API route controllers
