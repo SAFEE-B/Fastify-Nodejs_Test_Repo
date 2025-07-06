@@ -1,0 +1,41 @@
+services:
+  # Backend API Service
+  - type: web
+    name: email-client-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    rootDir: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: email-client-frontend
+          property: host
+    healthCheckPath: /api/health
+
+  # Frontend Static Site
+  - type: web
+    name: email-client-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build && npm run export
+    staticPublishPath: out
+    rootDir: frontend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: email-client-backend
+          property: host 

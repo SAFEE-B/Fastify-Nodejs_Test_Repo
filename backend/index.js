@@ -13,7 +13,7 @@ const fastify = Fastify({
 
 fastify.register(routes);
 
-fastify.listen({ port: process.env.PORT || 3001 }, async function (err, address) {
+fastify.listen({ port: process.env.PORT || 3001, host: '0.0.0.0' }, async function (err, address) {
   if (err) {
     fastify.log.error(err)
     process.exit(1)

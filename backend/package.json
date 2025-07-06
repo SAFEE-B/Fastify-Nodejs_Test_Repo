@@ -19,7 +19,8 @@
     "migrate": "knex migrate:latest",
     "seed": "node seed.js",
     "start": "node index.js",
-    "dev": "PORT=3001 nodemon index.js"
+    "dev": "PORT=3001 nodemon index.js",
+    "build": "npm run migrate"
   },
   "author": "",
   "license": "ISC",
