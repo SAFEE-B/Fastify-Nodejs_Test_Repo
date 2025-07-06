@@ -2,7 +2,7 @@
  * API Service for email operations
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 /**
  * Custom error class for API errors
@@ -20,7 +20,7 @@ class ApiError extends Error {
  * Make HTTP request with error handling
  */
 async function makeRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${API_BASE_URL}/api${endpoint}`;
   
   const defaultOptions = {
     headers: {
@@ -253,11 +253,19 @@ export const healthApi = {
    * Check API health
    */
   async checkHealth() {
-    return makeRequest('/health', {
+    // Health endpoint doesn't use /api prefix
+    const url = `${API_BASE_URL}/health`;
+    const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
+    
+    if (!response.ok) {
+      throw new ApiError(`Health check failed: ${response.statusText}`, response.status);
+    }
+    
+    return await response.json();
   }
 };
 

@@ -28,6 +28,7 @@ services:
     env: static
     region: oregon
     plan: free
+    # Updated build command - NO export needed with output: 'export'
     buildCommand: npm install && npm run build
     staticPublishPath: out
     rootDir: frontend
