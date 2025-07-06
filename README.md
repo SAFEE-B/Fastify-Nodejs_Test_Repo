@@ -36,13 +36,44 @@ This is a monorepo. It has two folders:
 2. `backend`: This is the backend of the application. It is built using Fastify.
 
 # Setup
+
+## Backend Setup (with Gmail SMTP)
+1. `cd backend` - Go to the backend folder
+2. `yarn install` - Install the dependencies
+3. **Configure Gmail SMTP for email sending:**
+   - Create a `.env` file in the backend directory
+   - See detailed instructions in `backend/env-setup.md`
+   - Add your Gmail credentials:
+     ```env
+     GMAIL_USER=your-email@gmail.com
+     GMAIL_APP_PASSWORD=your-16-character-app-password
+     PORT=3001
+     ```
+4. `yarn migrate` - Run the knex db migrations
+5. `yarn seed` - (Optional) Add sample emails to test with
+6. `yarn dev` - Start the development server (http://localhost:3001)
+
+## Frontend Setup
 1. `cd frontend` - Go to the frontend folder
 2. `yarn install` - Install the dependencies
 3. `yarn dev` - Start the development server (http://localhost:3000)
-4. `cd ../backend` - Go to the backend folder
-5. `yarn install` - Install the dependencies
-6. `yarn migrate` - Run the knex db migrations
-7. `yarn dev` - Start the development server (http://localhost:3001)
+
+## Gmail SMTP Configuration
+
+### ⚠️ Important: Gmail App Password Required
+
+To actually send emails (not just save them locally), you need to:
+
+1. **Enable 2-Factor Authentication** on your Gmail account
+2. **Generate an App Password** (NOT your regular password)
+3. **Add credentials to `.env` file**
+
+**Detailed instructions:** See `backend/env-setup.md`
+
+### Without Gmail Configuration
+- The app will work perfectly for viewing/managing emails
+- New emails will be saved to the database but not sent
+- You'll see a warning message when composing emails
 
 # Design
 1. [MUI](https://mui.com/) is installed and used for the design of the frontend.

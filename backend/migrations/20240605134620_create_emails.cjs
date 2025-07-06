@@ -5,12 +5,21 @@
 exports.up = function (knex) {
     return knex.schema.createTable('emails', table => {
         table.increments('id').primary();
-        table.text('to');
-        table.text('cc');
-        table.text('bcc');
-        table.string('subject');
-        table.text('body');
-        table.timestamps(true, true);
+        table.string('to', 255).notNullable();
+        table.string('cc', 255);
+        table.string('bcc', 255);
+        table.string('subject', 255).notNullable();
+        table.text('body').notNullable();
+        table.boolean('read').defaultTo(false);
+        table.boolean('starred').defaultTo(false);
+        table.timestamp('created_at').defaultTo(knex.fn.now());
+        table.timestamp('updated_at').defaultTo(knex.fn.now());
+        
+        // Indexes for better performance
+        table.index(['created_at']);
+        table.index(['read']);
+        table.index(['starred']);
+        table.index(['to']);
     });
 };
 
